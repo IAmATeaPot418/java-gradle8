@@ -35,11 +35,11 @@ jobs:
           with:
             distribution: microsoft
             java-version: "17"
-            cache: maven
-            cache-dependency-path: pom.xml
+            cache: gradle
+            cache-dependency-path: gradle/wrapper/gradle-wrapper.properties
 
         - name: Compile Package
-          run: mvn clean install
+          run: ./gradlew assemble
             
         - name: Endor Labs Workflow Dispatch
           if: ${{ github.event_name == 'workflow_dispatch' }}
