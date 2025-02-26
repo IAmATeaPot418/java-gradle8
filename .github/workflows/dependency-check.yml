@@ -18,7 +18,9 @@ jobs:
 
       - name: Install OWASP Dependency-Check
         run: |
-          curl -L -o dependency-check.zip https://github.com/jeremylong/DependencyCheck/releases/latest/download/dependency-check-${{ runner.os }}.zip
+          sudo apt-get update && sudo apt-get install jq -y
+          curl -s https://api.github.com/repos/jeremylong/DependencyCheck/releases/latest | jq -r '.assets[] | select(.name | test("dependency-check-.*-release.zip")) | .browser_download_url' | xargs curl -L -o dependency-check.zip
+          unzip -t dependency-check.zip
           unzip dependency-check.zip -d dependency-check
           chmod +x dependency-check/bin/dependency-check.sh
 
