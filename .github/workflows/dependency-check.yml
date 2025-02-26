@@ -1,4 +1,5 @@
 name: OWASP Dependency-Check
+
 on:
   workflow_dispatch:
   push:
@@ -18,18 +19,16 @@ jobs:
 
       - name: Install OWASP Dependency-Check
         run: |
-          sudo apt-get update && sudo apt-get install jq -y
           curl -s https://api.github.com/repos/jeremylong/DependencyCheck/releases/latest | jq -r '.assets[] | select(.name | test("dependency-check-.*-release.zip")) | .browser_download_url' | xargs curl -L -o dependency-check.zip
-          unzip -t dependency-check.zip
           unzip dependency-check.zip -d dependency-check
           chmod +x dependency-check/bin/dependency-check.sh
 
       - name: Run Dependency-Check
         run: |
-          ./dependency-check/bin/dependency-check.sh --scan . --format "HTML" --out dependency-check-report.html --enableExperimental
+          ./dependency-check/bin/dependency-check.sh --project "Gradle8-Scan" --scan . --format "ALL" --out reports --enableExperimental
 
-      - name: Upload Dependency-Check Report
+      - name: Upload Dependency-Check Reports
         uses: actions/upload-artifact@v4
         with:
-          name: dependency-check-report
-          path: dependency-check-report.html
+          name: dependency-check-reports
+          path: reports/
